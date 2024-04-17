@@ -18,10 +18,15 @@ def add_row_column_for_facets(
 
 
 def apply_style(
-    chart: alt.Chart, title: str, valid_row_col: list[int] = None
+    chart: alt.Chart,
+    title: str | None = None,
+    subtitle: str | None = None,
 ) -> alt.Chart:
+    title = title.upper() if isinstance(title, str) else ""
+    subtitle = subtitle.upper() if isinstance(subtitle, str) else ""
+    title = alt.TitleParams(title, subtitle=[subtitle])
     chart = (
-        chart.properties(title=title.upper())
+        chart.properties(title=title)
         .configure_axis(
             labelFont="Neue Haas Unica, sans-serif",
             titleFont="Neue Haas Unica, sans-serif",
@@ -33,6 +38,9 @@ def apply_style(
         .configure_title(
             fontSize=40,  # Adjust the font size of the title
             font="Girott, sans-serif",  # Set the font of the title
+            subtitleFont="Neue Haas Unica, sans-serif",
+            subtitleFontSize=25,
+            subtitleLineHeight=130,
         )
         .configure_legend(
             labelFont="Neue Haas Unica, sans-serif",
@@ -44,15 +52,5 @@ def apply_style(
             labelFontSize=0,
         )
     )
-    if isinstance(valid_row_col, list):
-        r, c = valid_row_col
-        chart = (
-            chart.transform_window(row_number="row_number()")
-            .transform_calculate(
-                row=f"datum.row_number < {r} ? datum.row_number : null",
-                column=f"datum.row_number < {r} ? datum.column : null",
-            )
-            .transform_filter("datum.row != null && datum.column != null")
-        )
 
     return chart
