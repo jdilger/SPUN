@@ -1,5 +1,0 @@
-pandas
-geopandas
-altair
-numpy
-jupyterlab
